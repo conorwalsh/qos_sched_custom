@@ -37,7 +37,7 @@ _Note: This app has only been tested on Ubuntu 18.04_
 
 Example output of app:
 
-![](/screenshots/qos_sched_custom_screenshot.PNG)
+![](/screenshots/qos_sched_custom_1911_screenshot.PNG)
 
 ## Classifying Packets
 The Destination MAC address is used to set how QoS will classify packet
@@ -61,6 +61,9 @@ _The range command in pktgen can be used to vary the mac address of the packets_
 
 ## Release History
 
+* v19.11
+    * This release coincided with the 19.11 DPDK release and this app is compatible with DPDK 19.05
+    * Fixed floating point errors when app started with no traffic flow
 * v19.05
     * This release coincided with the 19.05 DPDK release and this app is compatible with DPDK 19.05
 
