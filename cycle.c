@@ -1,3 +1,23 @@
+/*
+ * cycle.c
+ * Version: v19.05
+ *
+ * This file is used to record and calculate cycle information for the app
+ *
+ * Usage:
+ *    1) This file sould not be interacted with by the user
+ * 
+ * Copyright (c) 2020 Conor Walsh
+ * qos_sched_custom is licensed under an MIT license (see included license file)
+ *
+ * This project was based on the DPDK qos_sched app and as per it's original
+ *    BSD-3 licence the original copyright and licence are maintained below
+ * ------------------------------------------
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Copyright(c) 2010-2014 Intel Corporation
+ * ------------------------------------------
+ */
+
 #include <unistd.h>
 #include <stdint.h>
 #include "cycle.h"
