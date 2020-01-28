@@ -71,7 +71,7 @@ _The range command in pktgen can be used to vary the mac address of the packets_
 
 Conor Walsh – conor@conorwalsh.net
 
-DOAT is distributed under the MIT license. See ``LICENSE`` for more information.
+This project is distributed under the MIT license. See ``LICENSE`` for more information.
 
 [https://github.com/conorwalsh/qos_sched_custom](https://github.com/conorwalsh/qos_sched_custom/)
 
