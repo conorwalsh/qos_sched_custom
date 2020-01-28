@@ -1,6 +1,6 @@
 /*
  * cycle.c
- * Version: v19.05
+ * Version: v19.11
  *
  * This file is used to record and calculate cycle information for the app
  *
