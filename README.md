@@ -3,7 +3,7 @@
 
 ![Status](https://img.shields.io/badge/status-released-green.svg?style=flat-square)
 [![Maintenance](https://img.shields.io/badge/maintained-yes-green.svg?style=flat-square)](https://GitHub.com/conorwalsh/qos_sched_custom/graphs/commit-activity)
-[![GitHub tag](https://img.shields.io/badge/version-v19.11-green.svg?style=flat-square)](https://GitHub.com/conorwalsh/qos_sched_custom/tags/)
+[![Version](https://img.shields.io/badge/version-v19.11-green.svg?style=flat-square)](https://GitHub.com/conorwalsh/qos_sched_custom/tags/)
 ![Code Size](https://img.shields.io/github/languages/code-size/conorwalsh/qos_sched_custom.svg?style=flat-square)
 [![GitHub license](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/conorwalsh/qos_sched_custom/blob/master/LICENSE)
 [![HitCount](http://hits.dwyl.io/conorwalsh/qos_sched_custom.svg)](http://hits.dwyl.io/conorwalsh/qos_sched_custom)
