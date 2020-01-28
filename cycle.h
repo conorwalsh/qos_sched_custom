@@ -1,4 +1,25 @@
-// Define Functions to be used by the cycle measurements
+/*
+ * cycle.c
+ * Version: v19.05
+ *
+ * This file is used define functions to be used by the cycle measurements
+ *
+ * The DPDK Optimisation and Analysis Tool (DOAT) is an out-of-band tool for analysing
+ *   and optimising DPDK applications
+ *
+ * Usage:
+ *    1) This file sould not be interacted with by the user
+ * 
+ * Copyright (c) 2020 Conor Walsh
+ * qos_sched_custom is licensed under an MIT license (see included license file)
+ *
+ * This project was based on the DPDK qos_sched app and as per it's original
+ *    BSD-3 licence the original copyright and licence are maintained below
+ * ------------------------------------------
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Copyright(c) 2010-2014 Intel Corporation
+ * ------------------------------------------
+ */
 
 #define CYCLE_PUT_EN_QOS(cycEnQos,pktEnQos)		cycle_put_en_qos((cycEnQos),(pktEnQos))
 #define CYCLE_GET_EN_QOS()         			cycle_get_en_qos()
