@@ -35,6 +35,10 @@ _Note: This app has only been tested on Ubuntu 18.04_
     ./build/qos_sched -l 26,27,71 -w 0000:83:00.0 --telemetry -- --pfc "0,0,27,71" --cfg profile.cfg --mst 26
     ```
 
+Example output of app:
+
+![](/screenshots/qos_sched_custom_screenshot.PNG)
+
 ## Classifying Packets
 The Destination MAC address is used to set how QoS will classify packet
 
