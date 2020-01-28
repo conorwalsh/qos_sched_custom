@@ -1,5 +1,22 @@
-/* SPDX-License-Identifier: BSD-3-Clause
- * Copyright(c) 2010-2014 Intel Corporation
+  
+/*
+ * app_thread.c
+ * Version: v19.11
+ *
+ * This file contains the code that gets launched on threads by the app
+ *
+ * Usage:
+ *    1) This file sould not be interacted with by the user
+ * 
+ * Copyright (c) 2020 Conor Walsh
+ * qos_sched_custom is licensed under an MIT license (see included license file)
+ *
+ * This project was based on the DPDK qos_sched app and as per it's original
+ *    BSD-3 licence the original copyright and licence are maintained below
+ * ------------------------------------------
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Copyright(c) 2010-2014 Intel Corporation
+ * ------------------------------------------
  */
 
 #include <stdint.h>
@@ -15,39 +32,26 @@
 #include <rte_sched.h>
 
 #include "main.h"
+#include "cycle.h"
 
-/*
- * QoS parameters are encoded as follows:
- *		Outer VLAN ID defines subport
- *		Inner VLAN ID defines pipe
- *		Destination IP host (0.0.0.XXX) defines queue
- * Values below define offset to each field from start of frame
- */
 #define SUBPORT_OFFSET	7
 #define PIPE_OFFSET		9
 #define QUEUE_OFFSET	20
 #define COLOR_OFFSET	19
 
+#define QOSSTATS
+
 static inline int
 get_pkt_sched(struct rte_mbuf *m, uint32_t *subport, uint32_t *pipe,
 			uint32_t *traffic_class, uint32_t *queue, uint32_t *color)
 {
-	/*uint16_t *pdata = rte_pktmbuf_mtod(m, uint16_t *);
-	uint16_t pipe_queue;
-	*subport = (rte_be_to_cpu_16(pdata[SUBPORT_OFFSET]) & 0x0FFF) &
-		(port_params.n_subports_per_port - 1);
-	*pipe = (rte_be_to_cpu_16(pdata[PIPE_OFFSET]) & 0x0FFF) &
-		(subport_params[*subport].n_pipes_per_subport_enabled - 1);
-	pipe_queue = active_queues[(pdata[QUEUE_OFFSET] >> 8) % n_active_queues];
-	*traffic_class = pipe_queue > RTE_SCHED_TRAFFIC_CLASS_BE ?
-			RTE_SCHED_TRAFFIC_CLASS_BE : pipe_queue;
-	*queue = pipe_queue - *traffic_class;
-	*color = pdata[COLOR_OFFSET] & 0x03;
-	*/
-
+	// Read the Ethernet Header of the packet
 	struct rte_ether_hdr *eth;
 	eth = rte_pktmbuf_mtod(m, struct rte_ether_hdr *);
 
+	// Use Destinsation MAC address to set how packet will be classified by QoS
+	// XX:XX:XX:XX:XX:XX
+	// COLOR:XX:SUBPORT:PIPE:TRAFFICCLASS:QUEUE
 	*subport = eth->d_addr.addr_bytes[2];
 	*pipe = eth->d_addr.addr_bytes[3];
 	*traffic_class = eth->d_addr.addr_bytes[4];
@@ -72,11 +76,20 @@ app_rx_thread(struct thread_conf **confs)
 	uint32_t color;
 
 	while ((conf = confs[conf_idx])) {
+		
+		#ifdef QOSSTATS	
+		uint64_t cycStartTotal = rte_get_tsc_cycles();
+		#endif
+
 		nb_rx = rte_eth_rx_burst(conf->rx_port, conf->rx_queue, rx_mbufs,
 				burst_conf.rx_burst);
 
 		if (likely(nb_rx != 0)) {
 			APP_STATS_ADD(conf->stat.nb_rx, nb_rx);
+						
+			#ifdef QOSSTATS
+			uint64_t cycStart = rte_get_tsc_cycles();
+			#endif
 
 			for(i = 0; i < nb_rx; i++) {
 				get_pkt_sched(rx_mbufs[i],
@@ -87,6 +100,14 @@ app_rx_thread(struct thread_conf **confs)
 						traffic_class, queue,
 						(enum rte_color) color);
 			}
+			
+			#ifdef QOSSTATS
+			uint64_t cycStop = rte_get_tsc_cycles();
+			if(nb_rx>0){
+				uint64_t cycFinal = cycStop-cycStart;
+				CYCLE_PUT_RX(cycFinal,nb_rx);
+			}
+			#endif
 
 			if (unlikely(rte_ring_sp_enqueue_bulk(conf->rx_ring,
 					(void **)rx_mbufs, nb_rx, NULL) == 0)) {
@@ -100,6 +121,17 @@ app_rx_thread(struct thread_conf **confs)
 		conf_idx++;
 		if (confs[conf_idx] == NULL)
 			conf_idx = 0;
+		
+		#ifdef QOSSTATS
+		uint64_t cycStopTotal = rte_get_tsc_cycles();
+		uint64_t cycFinalTotal = cycStopTotal-cycStartTotal;
+		if(nb_rx<=0){
+			CYCLE_PUT_RX_IDLE(cycFinalTotal);
+		}
+		else{
+			CYCLE_PUT_RX_USED(cycFinalTotal);
+		}
+		#endif
 	}
 }
 
@@ -233,21 +265,61 @@ app_mixed_thread(struct thread_conf **confs)
 
 	while ((conf = confs[conf_idx])) {
 		uint32_t nb_pkt;
+		
+		#ifdef QOSSTATS
+		uint64_t cycStartTotal = rte_get_tsc_cycles();
+
+		uint64_t cycStartRing = rte_get_tsc_cycles();
+		#endif
 
 		/* Read packet from the ring */
 		nb_pkt = rte_ring_sc_dequeue_burst(conf->rx_ring, (void **)mbufs,
 					burst_conf.ring_burst, NULL);
+		
+		#ifdef QOSSTATS
+		uint64_t cycStopRing = rte_get_tsc_cycles();
+		#endif
+		
 		if (likely(nb_pkt)) {
+			#ifdef QOSSTATS
+			uint64_t cycStartEn = rte_get_tsc_cycles();
+			#endif
+			
 			int nb_sent = rte_sched_port_enqueue(conf->sched_port, mbufs,
 					nb_pkt);
+			
+			#ifdef QOSSTATS
+			uint64_t cycStopEn = rte_get_tsc_cycles();
+						
+			if(nb_pkt>0){
+				uint64_t cycFinal = cycStopEn-cycStartEn;
+				CYCLE_PUT_EN_QOS(cycFinal,nb_pkt);
+			}
+			#endif
 
 			APP_STATS_ADD(conf->stat.nb_drop, nb_pkt - nb_sent);
 			APP_STATS_ADD(conf->stat.nb_rx, nb_pkt);
 		}
 
+		#ifdef QOSSTATS
+		uint64_t cycStartDe = rte_get_tsc_cycles();
+		#endif
 
 		nb_pkt = rte_sched_port_dequeue(conf->sched_port, mbufs,
 					burst_conf.qos_dequeue);
+		
+		#ifdef QOSSTATS
+		uint64_t cycStopDe = rte_get_tsc_cycles();
+
+		if(nb_pkt>0){
+			uint64_t cycFinal = cycStopDe-cycStartDe;
+			CYCLE_PUT_DE_QOS(cycFinal,nb_pkt);
+		
+			uint64_t cycRing = cycStopRing-cycStartRing;
+			CYCLE_PUT_RING_QOS(cycRing,nb_pkt);
+		}
+		#endif
+		
 		if (likely(nb_pkt > 0)) {
 			app_send_packets(conf, mbufs, nb_pkt);
 
@@ -261,8 +333,19 @@ app_mixed_thread(struct thread_conf **confs)
 
 			/* now check is there any packets left to be transmitted */
 			if (conf->n_mbufs != 0) {
+				#ifdef QOSSTATS
+				uint64_t cycStartSend = rte_get_tsc_cycles();
+				#endif
+				
 				app_send_burst(conf);
 
+				#ifdef QOSSTATS
+				uint64_t cycStopSend = rte_get_tsc_cycles();
+
+				uint64_t cycSend = cycStopSend-cycStartSend;
+				CYCLE_PUT_SEND_QOS(cycSend,nb_pkt);
+				#endif
+				
 				conf->n_mbufs = 0;
 			}
 			conf->counter = 0;
@@ -271,5 +354,22 @@ app_mixed_thread(struct thread_conf **confs)
 		conf_idx++;
 		if (confs[conf_idx] == NULL)
 			conf_idx = 0;
+		
+		#ifdef QOSSTATS	
+		uint64_t cycStopTx = rte_get_tsc_cycles();
+				
+		uint64_t cycStopTotal = rte_get_tsc_cycles();
+		uint64_t cycFinalTotal = cycStopTotal-cycStartTotal;
+							
+		if(nb_pkt>0){
+			uint64_t cycFinal = cycStopTx-cycStartTx;
+			CYCLE_PUT_TX(cycFinal,nb_pkt);
+
+			CYCLE_PUT_TX_USED(cycFinalTotal);
+		}
+		else{
+			CYCLE_PUT_TX_IDLE(cycFinalTotal);
+		}
+		#endif
 	}
 }
