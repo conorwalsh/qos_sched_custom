@@ -37,35 +37,13 @@ static inline int
 get_pkt_sched(struct rte_mbuf *m, uint32_t *subport, uint32_t *pipe,
 			uint32_t *traffic_class, uint32_t *queue, uint32_t *color)
 {
-	//uint16_t *pdata = rte_pktmbuf_mtod(m, uint16_t *);
-
+	// Read the Ethernet Header of the packet
 	struct ether_hdr *eth;
 	eth = rte_pktmbuf_mtod(m, struct ether_hdr *);	
 	
-	//Print out MAC addresses
-	/*printf("HEX MAC: %02"PRIx8":",eth->d_addr.addr_bytes[0]);
-	printf("%02"PRIx8":",eth->d_addr.addr_bytes[1]);
-	printf("%02"PRIx8":",eth->d_addr.addr_bytes[2]);
-	printf("%02"PRIx8":",eth->d_addr.addr_bytes[3]);
-	printf("%02"PRIx8":",eth->d_addr.addr_bytes[4]);
-	printf("%02"PRIx8"\t",eth->d_addr.addr_bytes[5]);
-	printf("DEC MAC: %02"PRId32":",eth->d_addr.addr_bytes[0]);
-	printf("%02"PRId32":",eth->d_addr.addr_bytes[1]);
-	printf("%02"PRId32":",eth->d_addr.addr_bytes[2]);
-	printf("%02"PRId32":",eth->d_addr.addr_bytes[3]);
-	printf("%02"PRId32":",eth->d_addr.addr_bytes[4]);
-	printf("%02"PRId32"\n",eth->d_addr.addr_bytes[5]);*/
-
-	//*subport = (rte_be_to_cpu_16(pdata[SUBPORT_OFFSET]) & 0x0FFF) &
-	//		(port_params.n_subports_per_port - 1); /* Outer VLAN ID*/
-	//pipe = (rte_be_to_cpu_16(pdata[PIPE_OFFSET]) & 0x0FFF) &
-	//		(port_params.n_pipes_per_subport - 1); /* Inner VLAN ID */
-	//*traffic_class = (pdata[QUEUE_OFFSET] & 0x0F) &
-	//		(RTE_SCHED_TRAFFIC_CLASSES_PER_PIPE - 1); /* Destination IP */
-	//*queue = ((pdata[QUEUE_OFFSET] >> 8) & 0x0F) &
-	//		(RTE_SCHED_QUEUES_PER_TRAFFIC_CLASS - 1) ; /* Destination IP */
-	//*color = pdata[COLOR_OFFSET] & 0x03; 	/* Destination IP */
-	
+	// Use Destinsation MAC address to set how packet will be classified by QoS
+	// XX:XX:XX:XX:XX:XX
+	// COLOR:XX:SUBPORT:PIPE:TRAFFICCLASS:QUEUE
 	*subport = eth->d_addr.addr_bytes[2];
 	*pipe = eth->d_addr.addr_bytes[3];
 	*traffic_class = eth->d_addr.addr_bytes[4];
