@@ -1,5 +1,21 @@
-/* SPDX-License-Identifier: BSD-3-Clause
- * Copyright(c) 2010-2014 Intel Corporation
+/*
+ * main.c
+ * Version: v19.05
+ *
+ * This is the main file for the project
+ *
+ * Usage:
+ *    1) Example run command: ./build/qos_sched -l 26,27,71 -w 0000:83:00.0 -- --pfc "0,0,27,71" --cfg profile.cfg --mst 26
+ * 
+ * Copyright (c) 2020 Conor Walsh
+ * qos_sched_custom is licensed under an MIT license (see included license file)
+ *
+ * This project was based on the DPDK qos_sched app and as per it's original
+ *    BSD-3 licence the original copyright and licence are maintained below
+ * ------------------------------------------
+ *  SPDX-License-Identifier: BSD-3-Clause
+ *  Copyright(c) 2010-2014 Intel Corporation
+ * ------------------------------------------
  */
 
 #include <unistd.h>
