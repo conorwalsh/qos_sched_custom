@@ -1,11 +1,8 @@
 /*
- * cycle.c
+ * cycle.h
  * Version: v19.05
  *
  * This file is used define functions to be used by the cycle measurements
- *
- * The DPDK Optimisation and Analysis Tool (DOAT) is an out-of-band tool for analysing
- *   and optimising DPDK applications
  *
  * Usage:
  *    1) This file sould not be interacted with by the user
