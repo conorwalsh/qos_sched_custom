@@ -1,3 +1,5 @@
+// Define Functions to be used by the cycle measurements
+
 #define CYCLE_PUT_EN_QOS(cycEnQos,pktEnQos)		cycle_put_en_qos((cycEnQos),(pktEnQos))
 #define CYCLE_GET_EN_QOS()         			cycle_get_en_qos()
 #define CYCLE_GET_EN_QOS_CALL()                         cycle_get_en_qos_call()
