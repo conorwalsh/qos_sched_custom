@@ -36,6 +36,10 @@ _Note: This app has only been tested on Ubuntu 18.04_
     ```
     _Example run commands are available in the bash (*.sh) files in the repo_
 
+Example output of app:
+
+![](/screenshots/qos_sched_custom_screenshot.PNG)
+
 ## Classifying Packets
 The Destination MAC address is used to set how QoS will classify packet
 
