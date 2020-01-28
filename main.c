@@ -179,7 +179,10 @@ app_stat(void)
 				stats.ipackets - rx_stats[i].ipackets,
 				stats.ierrors - rx_stats[i].ierrors,
 				stats.rx_nombuf - rx_stats[i].rx_nombuf);
-		int avgpktsz = (int)(stats.ibytes/stats.ipackets);
+		int avgpktsz = 0;
+		if(stats.ipackets>0){
+			avgpktsz = (int)(stats.ibytes/stats.ipackets);
+		}
 		memcpy(&rx_stats[i], &stats, sizeof(stats));
 
 		rte_eth_stats_get(flow->tx_port, &stats);
@@ -196,10 +199,6 @@ app_stat(void)
 		printf("|   RX   | %10" PRIu64 " | %10" PRIu64 " |\n",
 			flow->rx_thread.stat.nb_rx,
 			flow->rx_thread.stat.nb_drop);
-		/*printf("| QOS+TX | %10" PRIu64 " | %10" PRIu64 " |   pps: %"PRIu64 " \n",
-			flow->wt_thread.stat.nb_rx,
-			flow->wt_thread.stat.nb_drop,
-			flow->wt_thread.stat.nb_rx - flow->wt_thread.stat.nb_drop);*/
 		printf("| QOS+TX | %10" PRIu64 " | %10" PRIu64 " |\n",
 		        flow->wt_thread.stat.nb_rx,
 		        flow->wt_thread.stat.nb_drop);
