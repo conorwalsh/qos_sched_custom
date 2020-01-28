@@ -259,7 +259,6 @@ app_stat(void)
 	                printf("|            DISABLED              |\n");
 	                printf("+--------+------------+------------+\n");
 		}
-		printf("Avg Pkts in QoS: %ld\n",CYCLE_GET_DELTA());
 		printf("Subs: %" PRIu32 "\n",port_params.n_pipes_per_subport);
 		printf("Avg Pkt Size: %dB\n",avgpktsz);
 		printf("PPS: %.3fMPPS\n", (flow->wt_thread.stat.nb_rx - flow->wt_thread.stat.nb_drop)/1000000.0);

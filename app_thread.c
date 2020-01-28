@@ -328,6 +328,10 @@ app_mixed_thread(struct thread_conf **confs)
 
 		conf->counter++;
 
+		#ifdef QOSSTATS
+		uint64_t cycStartTx = rte_get_tsc_cycles();
+		#endif
+
 		/* drain ring and TX queues */
 		if (unlikely(conf->counter > drain_tsc)) {
 

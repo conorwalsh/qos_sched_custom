@@ -321,5 +321,10 @@ void cycle_put_delta(uint64_t delta){
 }
 
 uint64_t cycle_get_delta(void){
-	return (uint64_t)(delta_total/delta_count);
+	if(delta_count!=0){
+		return (uint64_t)(delta_total/delta_count);
+	}
+	else{
+		return 0;
+	}
 }
