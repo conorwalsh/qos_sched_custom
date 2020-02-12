@@ -7,7 +7,7 @@
 ![Code Size](https://img.shields.io/github/languages/code-size/conorwalsh/qos_sched_custom.svg?style=flat-square)
 [![Lines of Code](https://tokei.rs/b1/github/conorwalsh/qos_sched_custom?style=flat-square)]()
 [![GitHub license](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/conorwalsh/qos_sched_custom/blob/master/LICENSE)
-[![HitCount](http://hits.dwyl.io/conorwalsh/qos_sched_custom.svg)](http://hits.dwyl.io/conorwalsh/qos_sched_custom)
+<!--[![HitCount](http://hits.dwyl.io/conorwalsh/qos_sched_custom.svg)](http://hits.dwyl.io/conorwalsh/qos_sched_custom)-->
 
 [DPDK](https://dpdk.org) is a set of C libraries for fast packet processing. DPDK has many sample applications for showcasing the features of DPDK.
 
