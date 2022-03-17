@@ -1,13 +1,15 @@
 # qos_sched_custom
 > Modified DPDK QoS Scheduler Sample Application
 
-![Status](https://img.shields.io/badge/status-released-green.svg?style=flat-square)
-[![Maintenance](https://img.shields.io/badge/maintained-yes-green.svg?style=flat-square)](https://GitHub.com/conorwalsh/qos_sched_custom/graphs/commit-activity)
+![Status](https://img.shields.io/badge/status-scheduled%20for%20EOL-orange.svg?style=flat-square)
+[![Maintenance](https://img.shields.io/badge/maintained-no-red.svg?style=flat-square)](https://GitHub.com/conorwalsh/qos_sched_custom/graphs/commit-activity)
 [![Version](https://img.shields.io/badge/version-v19.11-green.svg?style=flat-square)](https://GitHub.com/conorwalsh/qos_sched_custom/tags/)
 ![Code Size](https://img.shields.io/github/languages/code-size/conorwalsh/qos_sched_custom.svg?style=flat-square)
 [![Lines of Code](https://tokei.rs/b1/github/conorwalsh/qos_sched_custom?style=flat-square)]()
 [![GitHub license](https://img.shields.io/badge/license-MIT-green.svg?style=flat-square)](https://github.com/conorwalsh/qos_sched_custom/blob/master/LICENSE)
 <!--[![HitCount](http://hits.dwyl.io/conorwalsh/qos_sched_custom.svg)](http://hits.dwyl.io/conorwalsh/qos_sched_custom)-->
+
+> :warning: There is currently no plan to maintain this project beyond DPDK 19.11, DPDK 19.11 is scheduled for EOL in December 2022. This project will be EOL'ed along with DPDK 19.11. :warning:
 
 [DPDK](https://dpdk.org) is a set of C libraries for fast packet processing. DPDK has many sample applications for showcasing the features of DPDK.
 
